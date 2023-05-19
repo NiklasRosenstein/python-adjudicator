@@ -14,10 +14,10 @@ classifiers = []
 keywords = []
 
 [tool.poetry.urls]
-# "Bug Tracker" = ""
+"Bug Tracker" = "https://github.com/NiklasRosenstein/python-adjudicator/issues"
 # Documentation = ""
-# Homepage = ""
-# Repository = ""
+Homepage = "https://github.com/NiklasRosenstein/python-adjudicator"
+Repository = "https://github.com/NiklasRosenstein/python-adjudicator"
 
 [tool.poetry.dependencies]
 python = "^3.10"
