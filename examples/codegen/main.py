@@ -7,6 +7,7 @@ from textwrap import dedent, indent
 from typing import IO
 
 from equilibrium import Resource, ResourceContext
+
 from adjudicator import RulesEngine, collect_rules, get, rule
 
 #
