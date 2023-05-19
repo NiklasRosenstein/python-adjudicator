@@ -9,3 +9,9 @@ id = "75368f14-3d17-4330-9302-8cd28d37597b"
 type = "breaking change"
 description = "Rename `RulesEngine.subjects` to `RulesEngine.facts`"
 author = "@NiklasRosenstein"
+
+[[entries]]
+id = "abf50f63-692d-43fb-b9b7-41eadfb955e3"
+type = "feature"
+description = "Add `RulesEngine.assert_facts()` and `RulesEngine.retract_facts()`"
+author = "@NiklasRosenstein"

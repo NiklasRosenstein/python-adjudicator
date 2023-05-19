@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Collection, Generic, KeysView, Mapping, Sequence, TypeAlias, TypeVar, cast, overload
+from typing import Any, Collection, Generic, Iterable, KeysView, Mapping, Sequence, TypeAlias, TypeVar, cast, overload
 
 from adjudicator.HashSupport import Hasher
 from adjudicator.Signature import Signature
@@ -96,6 +96,13 @@ information.
 
         return Params({**self._params, **params._params}, self._hasher)
 
+    def __sub__(self, types: Collection[type[Any]]) -> Params:
+        """
+        Remove the parameters in the right hand side from the left hand side.
+        """
+
+        return Params({k: v for k, v in self._params.items() if k not in types}, self._hasher)
+
     def __len__(self) -> int:
         return len(self._params)
 
@@ -117,6 +124,9 @@ information.
             if default is _Sentinel:
                 raise KeyError(f"Parameter of type {param_type} not found")
             return cast(U, default)
+
+    def items(self) -> Iterable[tuple[type[Any], object]]:
+        return self._params.items()
 
     def types(self) -> KeysView[type[Any]]:
         return self._params.keys()

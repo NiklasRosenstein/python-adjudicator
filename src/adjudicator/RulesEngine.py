@@ -72,6 +72,39 @@ class RulesEngine:
         assert isinstance(output, output_type), f"Expected {output_type}, got {type(output)}"
         return output
 
+    def assert_facts(self, facts: Params.InitType) -> None:
+        """
+        Assert facts to the rules engine. Note that this will fail if a fact of the given type already exists in
+        the rules engine.
+        """
+
+        facts = Params(facts)
+        overlap = self.facts.types() & facts.types()
+        if overlap:
+            raise ValueError(f"Fact(s) of type {overlap} already exist(s)")
+        self.facts = self.facts | facts
+
+    def retract_facts(self, facts: Params.InitType) -> None:
+        """
+        Retract facts from the rules engine. Note that this will fail if a fact of the given type does not exist in
+        the rules engine, or if the value specfified for a type does not match the value in the rules engine.
+        """
+
+        facts = Params(facts)
+        missing = facts.types() - self.facts.types()
+        if missing:
+            raise ValueError(f"Fact(s) of type {missing} do(es) not exist(s)")
+
+        for type_, fact in facts.items():
+            existing_fact = self.facts.get(type_)
+            if fact != existing_fact:
+                raise ValueError(
+                    f"Cannot retract fact of type {type_} because the fact provided does not match the same type of "
+                    "fact in the rules engine."
+                )
+
+        self.facts = self.facts - facts.types()
+
 
 def get(output_type: type[T], *inputs: object) -> T:
     """
