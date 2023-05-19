@@ -24,6 +24,14 @@ graph LR
 In the above example, an `Integer` can be derived by providing a `String` as a fact and `Rule1` will be executed, or
 by also providing an `IntegerBase` and `Rule2` will be executed.
 
+__Installation__
+
+Adjudicator is available on PyPI. You need at least Python 3.10.
+
+```bash
+pip install python-adjudicator
+```
+
 __Example code__
 
 Check out the [examples/codegen/](examples/codegen/) directory for a simple example of a rules engine that generates
