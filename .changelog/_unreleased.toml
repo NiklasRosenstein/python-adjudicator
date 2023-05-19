@@ -3,3 +3,9 @@ id = "4d88d8fc-640c-421d-b49f-46600c1e2fe9"
 type = "feature"
 description = "add `HashSupport.fallback()`"
 author = "@NiklasRosenstein"
+
+[[entries]]
+id = "75368f14-3d17-4330-9302-8cd28d37597b"
+type = "breaking change"
+description = "Rename `RulesEngine.subjects` to `RulesEngine.facts`"
+author = "@NiklasRosenstein"

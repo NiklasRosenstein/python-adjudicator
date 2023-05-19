@@ -68,7 +68,7 @@ def test__RulesEngine__picks_correct_rule_for_same_output() -> None:
                 id="r2",
             ),
         ],
-        subjects=[],
+        facts=[],
     )
 
     assert engine.get(int, Params(["42"])) == 42
@@ -76,7 +76,7 @@ def test__RulesEngine__picks_correct_rule_for_same_output() -> None:
     assert engine.get(int, Params([False])) == 0
 
 
-def test__RulesEngine__injects_subjects() -> None:
+def test__RulesEngine__injects_facts() -> None:
     @dataclass(frozen=True)
     class CustomType:
         v: int
@@ -90,7 +90,7 @@ def test__RulesEngine__injects_subjects() -> None:
                 id="r1",
             )
         ],
-        subjects=[CustomType(42)],
+        facts=[CustomType(42)],
     )
 
     assert engine.get(int, Params()) == 42

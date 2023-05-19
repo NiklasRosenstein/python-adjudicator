@@ -22,12 +22,12 @@ class RulesEngine:
     def __init__(
         self,
         rules: Iterable[Rule] | RulesGraph,
-        subjects: Params.InitType | None = None,
+        facts: Params.InitType | None = None,
         executor: Executor | None = None,
     ) -> None:
         self.graph = RulesGraph(rules)
         self.hashsupport = HashSupport()
-        self.subjects = Params(subjects or (), self.hashsupport)
+        self.facts = Params(facts or (), self.hashsupport)
         self.executor = executor or Executor.simple(Cache.memory())
 
     _current_engine_stack: ClassVar[list[RulesEngine]] = []
@@ -56,16 +56,16 @@ class RulesEngine:
         Evaluate the rules to derive the specified *output_type* from the given parameters.
         """
 
-        if not params and output_type in self.subjects:
-            return self.subjects.get(output_type)
+        if not params and output_type in self.facts:
+            return self.facts.get(output_type)
 
-        sig = Signature(set(params.types()) | set(self.subjects.types()), output_type)
+        sig = Signature(set(params.types()) | set(self.facts.types()), output_type)
         rules = self.graph.find_path(sig)
         assert len(rules) > 0, "Empty path?"
 
         output: Any = None
         for rule in rules:
-            inputs = self.subjects.filter(rule.input_types) | params.filter(rule.input_types)
+            inputs = self.facts.filter(rule.input_types) | params.filter(rule.input_types)
             output = self.executor.execute(rule, inputs, self)
             params = params | Params({rule.output_type: output}, self.hashsupport)
 
