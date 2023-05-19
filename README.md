@@ -1,5 +1,9 @@
 # adjudicator
 
+> __Adjudicator__ _(nount_): An adjudicator is a person or body that makes formal judgments on a disputed matter. They
+> are the ones who settle disputes or decide who is right in a disagreement. This could be a judge in a courtroom, an
+> arbitrator in a negotiation, or any person or system given the power to make decisions of this type.
+
 Adjudicator is a framework for type-based rules engines largely inspired by the Pants build system. The rule graph
 consists of nodes which are concrete Python types and edges which are functions that take a set of input types and
 produce an output type.
