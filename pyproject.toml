@@ -47,7 +47,7 @@ check  = "slap check"
 black  = "black --check examples/ src/ tests/"
 flake8 = "flake8 examples/ src/ tests/"
 isort  = "isort --check-only examples/ src/ tests/"
-mypy   = "dmypy examples/ run src/"
+mypy   = "dmypy run examples/ src/"
 pycln  = "pycln examples/ src/ tests/ --check"
 pytest = "pytest examples/ src/ tests/ -vv --doctest-modules"
 
