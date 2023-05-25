@@ -9,3 +9,9 @@ id = "7936e8ae-301f-41f8-ad9c-c87f2e2cfb11"
 type = "feature"
 description = "`collect_rules()` can now be called with an object as first argument and it will collect all callable members of the object that have been marked as a rule"
 author = "@NiklasRosenstein"
+
+[[entries]]
+id = "88c356c4-2085-4241-be0e-805bf987ab31"
+type = "improvement"
+description = "The `@rule` decorator no longer returns a `Rule` object, instead it marks the function with an attribute."
+author = "@NiklasRosenstein"
