@@ -3,3 +3,9 @@ id = "7325afc9-1dcc-45e8-8a9c-1d0092e90143"
 type = "feature"
 description = "Add `Rule.of()` which makes it easy to create a Rule from a function definition."
 author = "@NiklasRosenstein"
+
+[[entries]]
+id = "7936e8ae-301f-41f8-ad9c-c87f2e2cfb11"
+type = "feature"
+description = "`collect_rules()` can now be called with an object as first argument and it will collect all callable members of the object that have been marked as a rule"
+author = "@NiklasRosenstein"

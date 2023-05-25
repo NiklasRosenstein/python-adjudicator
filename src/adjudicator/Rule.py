@@ -105,6 +105,7 @@ def collect_rules(*, stackdepth: int = 0) -> list[Rule]:
 
 
 def collect_rules(
+    obj: Any | None = None,
     *,
     globals: Mapping[str, Any] | None = None,
     module: str | None = None,
@@ -126,14 +127,21 @@ def collect_rules(
     try:
         if globals is None:
             if module is None:
-                globals = get_scope(inspect.stack()[stackdepth + 1 :])
+                if obj is None:
+                    globals = get_scope(inspect.stack()[stackdepth + 1 :])
+                else:
+                    globals = (
+                        obj
+                        if isinstance(obj, Mapping)
+                        else {k: getattr(obj, k, None) for k in dir(obj) if not k.startswith("__")}
+                    )
             else:
                 globals = sys.modules[module].__dict__
 
         result = []
         for v in chain(globals.values()):
-            if isinstance(v, Rule):
-                result.append(v)
+            if callable(v) and getattr(v, "__adjudicator_rule__", False):
+                result.append(Rule.of(v))
         return result
     finally:
         del globals
