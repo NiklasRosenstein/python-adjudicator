@@ -49,27 +49,44 @@ class Rule:
     def execute(self, params: Params) -> Any:
         return self.func(params)
 
+    @staticmethod
+    def of(func: Callable[..., Any]) -> Rule:
+        """
+        Create a rule from a function. The function must have type annotations for all parameters and the return value.
+        """
+
+        annotations = get_annotations(func)
+        output_type = annotations.pop("return")
+        input_types = {v: k for k, v in annotations.items()}
+
+        if len(input_types) != len(annotations):
+            raise RuntimeError("Rule function must not have overlapping type annotations")
+        if output_type in input_types:
+            raise RuntimeError("Rule function must not have overlapping type annotations")
+        if len(input_types) != len(inspect.signature(func).parameters):
+            raise RuntimeError("Rule function must have type annotations for all parameters and return value")
+
+        @wraps(func)
+        def _wrapper(params: Params) -> Any:
+            return func(**{k: params.get(v) for v, k in input_types.items()})
+
+        return Rule(_wrapper, set(input_types), output_type, func.__module__ + "." + func.__qualname__)
+
 
 def rule(func: Callable[P, T]) -> Callable[P, T]:
     """
-    Decorator for functions to be used as rules.
+    Decorator for functions to be used as rules. Marks the function with a `__adjudicator_rule__` attribute. The
+    #collect_rules() function can be used to collect all functions marked with this attribute from a dictionary or
+    module.
     """
 
-    annotations = get_annotations(func)
-    output_type = annotations.pop("return")
-    input_types = {v: k for k, v in annotations.items()}
-    if len(input_types) != len(annotations):
-        raise RuntimeError("Rule function must not have overlapping type annotations")
-    if output_type in input_types:
-        raise RuntimeError("Rule function must not have overlapping type annotations")
-    if len(input_types) != func.__code__.co_argcount:
-        raise RuntimeError("Rule function must have type annotations for all parameters and return value")
+    setattr(func, "__adjudicator_rule__", True)
+    return func
 
-    @wraps(func)
-    def _wrapper(params: Params) -> Any:
-        return func(**{k: params.get(v) for v, k in input_types.items()})
 
-    return Rule(_wrapper, set(input_types), output_type, func.__module__ + "." + func.__qualname__)
+@overload
+def collect_rules(obj: Any, /) -> list[Rule]:
+    ...
 
 
 @overload

@@ -1,0 +1,5 @@
+[[entries]]
+id = "7325afc9-1dcc-45e8-8a9c-1d0092e90143"
+type = "feature"
+description = "Add `Rule.of()` which makes it easy to create a Rule from a function definition."
+author = "@NiklasRosenstein"
