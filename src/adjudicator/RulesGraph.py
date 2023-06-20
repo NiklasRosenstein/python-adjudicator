@@ -16,23 +16,15 @@ class RulesGraph:
     """
 
     def __init__(self, rules: Iterable[Rule] | RulesGraph) -> None:
+        self._rules: dict[str, Rule] = {}
+
         if isinstance(rules, RulesGraph):
-            self._rules: dict[str, Rule] = rules._rules.copy()
+            rules = list(rules._rules.values())
         else:
             rules = list(rules)
-            self._rules = {r.id: r for r in rules}
-            if len(self._rules) != len(rules):
-                raise ValueError("Duplicate rule IDs")
 
         self._graph = MultiDiGraph()
-        for rule in self._rules.values():
-            self._graph.add_nodes_from(rule.input_types)
-            self._graph.add_node(rule.output_type)
-            for input_type in rule.input_types:
-                self._graph.add_edge(input_type, rule.output_type, rule=rule)
-
-        if not is_directed_acyclic_graph(self._graph):  # type: ignore[no-untyped-call]
-            raise ValueError("Rules graph is not acyclic")
+        self.update(rules)
 
     def __iter__(self) -> Iterable[Rule]:
         return iter(self._rules.values())
@@ -42,6 +34,18 @@ class RulesGraph:
 
     def __getitem__(self, rule_id: str) -> Rule:
         return self._rules[rule_id]
+
+    def update(self, rules: Iterable[Rule]) -> None:
+        for rule in rules:
+            if rule.id in self._rules:
+                raise ValueError("Duplicate rule ID: " + rule.id)
+            self._rules[rule.id] = rule
+            self._graph.add_nodes_from(rule.input_types)
+            self._graph.add_node(rule.output_type)
+            for input_type in rule.input_types:
+                self._graph.add_edge(input_type, rule.output_type, rule=rule)
+        if not is_directed_acyclic_graph(self._graph):  # type: ignore[no-untyped-call]
+            raise ValueError("Rules graph is not acyclic")
 
     def rules_for(self, output_type: type[Any]) -> set[Rule]:
         """
