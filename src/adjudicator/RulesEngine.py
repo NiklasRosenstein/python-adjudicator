@@ -72,6 +72,9 @@ class RulesEngine:
         assert isinstance(output, output_type), f"Expected {output_type}, got {type(output)}"
         return output
 
+    def add_rules(self, rules: Iterable[Rule]) -> None:
+        self.graph.update(rules)
+
     def assert_facts(self, facts: Params.InitType) -> None:
         """
         Assert facts to the rules engine. Note that this will fail if a fact of the given type already exists in
