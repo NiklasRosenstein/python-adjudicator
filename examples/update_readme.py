@@ -103,8 +103,8 @@ def _get_preprocessor_directives(request: PreprocessFileTarget) -> PreprocessorD
 
 @dataclass(frozen=True)
 class ParsedDirective:
-    begin: str
-    end: str
+    begin: int
+    end: int
     opts: str
 
 
@@ -151,6 +151,8 @@ class IncludeFileDirective(PreprocessorDirective):
         regex = re.compile(r"(.*?)(?:\s+code:([^ ]+))?$")
         for directive in parse_directives(text, "include"):
             m = regex.match(directive.opts)
+            if m is None:
+                raise ValueError(f"Invalid include directive: {directive.opts} (@{directive.begin})")
             filename, code = m.groups()
             yield cls(directive.begin, directive.end, filename, code)
 
@@ -203,7 +205,7 @@ def _get_toc_directives(request: PreprocessFileTarget) -> TocDirectives:
 @rule()
 def _render_toc(request: TocDirective) -> RenderedDirective:
     content = get(ReadFile, ReadFileRequest(request.path)).content
-    regex = re.compile(f"(#+)\\s+(.*)")
+    regex = re.compile(r"(#+)\\s+(.*)")
     matches = list(regex.finditer(content, request.end))
     min_depth = min(len(match.group(1)) for match in matches)
     toc = []
@@ -254,7 +256,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     match args.goal:
         case "update":
-            goal_type = PreprocessGoal
+            goal_type: type[Any] = PreprocessGoal
         case "preview":
             goal_type = PreviewGoal
         case _:

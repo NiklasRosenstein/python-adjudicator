@@ -46,7 +46,7 @@ typed = true
 [tool.slap.test]
 check  = "slap check"
 black  = "black --check examples/ src/ tests/ --exclude examples/hello.py"
-flake8 = "flake8 examples/ src/ tests/"
+flake8 = "flake8 examples/ src/ tests/ --exclude examples/hello.py"
 isort  = "isort --check-only examples/ src/ tests/ --extend-skip examples/hello.py"
 mypy   = "dmypy run examples/ src/"
 pycln  = "pycln examples/ src/ tests/ --check"
