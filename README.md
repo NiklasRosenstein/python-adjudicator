@@ -39,7 +39,6 @@ invokes the `say_hello()` production rule because a `HelloResponse` is requested
 which matches the rule's signature.
 
 <!-- include examples/hello.py code:python -->
-
 ```python
 from dataclasses import dataclass
 from adjudicator import Params, RuleEngine, rule
