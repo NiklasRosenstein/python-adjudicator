@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from adjudicator.Cache import Cache
     from adjudicator.Params import Params
     from adjudicator.Rule import Rule
-    from adjudicator.RulesEngine import RulesEngine
+    from adjudicator.RuleEngine import RuleEngine
 
 
 class Executor(ABC):
@@ -18,7 +18,7 @@ class Executor(ABC):
     """
 
     @abstractmethod
-    def execute(self, rule: Rule, params: Params, engine: RulesEngine) -> Any:
+    def execute(self, rule: Rule, params: Params, engine: RuleEngine) -> Any:
         """
         Execute the specified rule with the specified params.
         """
@@ -49,7 +49,7 @@ class SimpleExecutor(Executor):
     def __init__(self, cache: Cache) -> None:
         self._cache = cache
 
-    def execute(self, rule: Rule, params: Params, engine: RulesEngine) -> Any:
+    def execute(self, rule: Rule, params: Params, engine: RuleEngine) -> Any:
         try:
             return self._cache.get(rule, params)
         except KeyError:
@@ -89,7 +89,7 @@ class ThreadedExecutor(Executor):
             )
             self._cache.set(rule, params, result)
 
-    def execute(self, rule: Rule, params: Params, engine: RulesEngine) -> Any:
+    def execute(self, rule: Rule, params: Params, engine: RuleEngine) -> Any:
         try:
             return self._cache.get(rule, params)
         except KeyError:

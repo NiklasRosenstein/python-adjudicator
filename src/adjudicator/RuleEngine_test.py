@@ -7,7 +7,7 @@ from adjudicator.Cache import Cache
 from adjudicator.Executor import Executor
 from adjudicator.Params import Params
 from adjudicator.Rule import Rule, collect_rules, rule
-from adjudicator.RulesEngine import RulesEngine, get
+from adjudicator.RuleEngine import RuleEngine, get
 
 sys.setrecursionlimit(130)
 
@@ -41,7 +41,7 @@ def test__RulesEngine__can_cache_properly(cache_impl: Cache, is_cached: bool) ->
         y = get(Fibonacci, n - 2)
         return Fibonacci(x.n + y.n)
 
-    engine = RulesEngine(list(collect_rules()), [], executor=Executor.simple(cache=cache_impl))
+    engine = RuleEngine(list(collect_rules()), [], executor=Executor.simple(cache=cache_impl))
 
     assert engine.get(Fibonacci, Params([0])).n == 0
     assert engine.get(Fibonacci, Params([3])).n == 2
@@ -54,7 +54,7 @@ def test__RulesEngine__can_cache_properly(cache_impl: Cache, is_cached: bool) ->
 
 
 def test__RulesEngine__picks_correct_rule_for_same_output() -> None:
-    engine = RulesEngine(
+    engine = RuleEngine(
         rules=[
             Rule(
                 func=lambda p: int(p.get(str)),
@@ -82,7 +82,7 @@ def test__RulesEngine__injects_facts() -> None:
     class CustomType:
         v: int
 
-    engine = RulesEngine(
+    engine = RuleEngine(
         rules=[
             Rule(
                 func=lambda p: p.get(CustomType).v,

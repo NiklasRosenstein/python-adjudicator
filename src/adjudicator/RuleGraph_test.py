@@ -2,7 +2,7 @@ from pytest import raises
 
 from adjudicator.errors import MultipleMatchingRulesError, NoMatchingRulesError
 from adjudicator.Rule import Rule
-from adjudicator.RulesGraph import RulesGraph
+from adjudicator.RuleGraph import RuleGraph
 from adjudicator.Signature import Signature
 
 
@@ -17,7 +17,7 @@ def test__RulesGraph__get_rules_for_output_type() -> None:
     And tests the output of `rules_for` for each type.
     """
 
-    graph = RulesGraph(
+    graph = RuleGraph(
         [
             Rule(
                 func=lambda p: int(p.get(str)),
@@ -51,7 +51,7 @@ def test__RulesGraph__get_rules_for_output_type__with_union_membership() -> None
     class SpecificA(A):
         pass
 
-    graph = RulesGraph()
+    graph = RuleGraph()
     graph.add_rules(
         [
             Rule(
@@ -71,7 +71,7 @@ def test__RulesGraph__get_rules_for_output_type__with_union_membership() -> None
 
 
 def test__RulesGraph__get_rules_for_output_type__returns_rules_without_inputs() -> None:
-    graph = RulesGraph()
+    graph = RuleGraph()
     graph.add_rules(
         [
             Rule(
@@ -96,7 +96,7 @@ def test__RulesGraph__find_path__cannot_resolve_diamond_dependency() -> None:
     whether to use the short or the long path.
     """
 
-    graph = RulesGraph(
+    graph = RuleGraph(
         rules=[
             Rule(
                 func=lambda p: int(p.get(str)),

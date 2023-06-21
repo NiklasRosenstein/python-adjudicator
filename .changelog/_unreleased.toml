@@ -9,3 +9,9 @@ id = "b34ceac4-05f5-4333-82d9-9a7c718d02ae"
 type = "breaking change"
 description = "Update `RulesEngine` API and add support for union memberships."
 author = "@NiklasRosenstein"
+
+[[entries]]
+id = "3b1fb663-dc49-4886-98c2-1928ae012ec3"
+type = "breaking change"
+description = "rename `RulesGraph` to `RuleGraph` and `RulesEngine` to `RuleEngine`"
+author = "@NiklasRosenstein"

@@ -9,13 +9,13 @@ from adjudicator.Executor import Executor
 from adjudicator.HashSupport import HashSupport
 from adjudicator.Params import Params
 from adjudicator.Rule import Rule
-from adjudicator.RulesGraph import RulesGraph
+from adjudicator.RuleGraph import RuleGraph
 from adjudicator.Signature import Signature
 
 T = TypeVar("T")
 
 
-class RulesEngine:
+class RuleEngine:
     """
     A simple rules engine.
 
@@ -25,16 +25,16 @@ class RulesEngine:
 
     def __init__(
         self,
-        rules: Iterable[Rule] | RulesGraph = (),
+        rules: Iterable[Rule] | RuleGraph = (),
         facts: Params.InitType | None = None,
         executor: Executor | None = None,
     ) -> None:
-        self.graph = RulesGraph(rules)
+        self.graph = RuleGraph(rules)
         self.hashsupport = HashSupport()
         self.facts = Params(facts or (), hasher=self.hashsupport)
         self.executor = executor or Executor.simple(Cache.memory())
 
-    _current_engine_stack: ClassVar[list[RulesEngine]] = []
+    _current_engine_stack: ClassVar[list[RuleEngine]] = []
 
     @contextmanager
     def as_current(self) -> Iterator[None]:
@@ -44,16 +44,16 @@ class RulesEngine:
         """
 
         try:
-            RulesEngine._current_engine_stack.append(self)
+            RuleEngine._current_engine_stack.append(self)
             yield
         finally:
-            assert RulesEngine._current_engine_stack.pop() is self
+            assert RuleEngine._current_engine_stack.pop() is self
 
     @staticmethod
-    def current() -> "RulesEngine":
-        if RulesEngine._current_engine_stack:
-            return RulesEngine._current_engine_stack[-1]
-        raise RuntimeError("No current RulesEngine")
+    def current() -> "RuleEngine":
+        if RuleEngine._current_engine_stack:
+            return RuleEngine._current_engine_stack[-1]
+        raise RuntimeError("No current RuleEngine")
 
     def get(self, output_type: type[T], params: Params) -> T:
         """
@@ -121,7 +121,7 @@ def get(output_type: type[T], *inputs: object) -> T:
     is a dictionary, it will be used as the input parameters and no arguments can follow.
     """
 
-    engine = RulesEngine.current()
+    engine = RuleEngine.current()
 
     if inputs and isinstance(inputs[0], dict):
         assert len(inputs) == 1, "No arguments allowed after dictionary"

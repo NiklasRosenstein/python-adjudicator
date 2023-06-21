@@ -23,16 +23,16 @@ class Edge(TypedDict):
     rule: NotRequired[Rule]
 
 
-class RulesGraph:
+class RuleGraph:
     """
     This graph contains types as the nodes and rules are the edges, as well as information on union types.
     """
 
-    def __init__(self, rules: Iterable[Rule] | RulesGraph = ()) -> None:
+    def __init__(self, rules: Iterable[Rule] | RuleGraph = ()) -> None:
         self._rules: dict[str, Rule] = {}
         self._unions: Mapping[type[Any], set[type[Any]]] = defaultdict(set)
 
-        if isinstance(rules, RulesGraph):
+        if isinstance(rules, RuleGraph):
             rules = list(rules._rules.values())
         else:
             rules = list(rules)

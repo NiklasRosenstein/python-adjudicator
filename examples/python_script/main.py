@@ -3,7 +3,7 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-from adjudicator import RulesEngine, get, rule
+from adjudicator import RuleEngine, get, rule
 
 
 @dataclass(frozen=True)
@@ -42,7 +42,7 @@ def python_script_execute(request: PythonScriptExecutionRequest, binary: PythonB
 if __name__ == "__main__":
     script_path = Path(__file__).parent / "script.py"
 
-    engine = RulesEngine()
+    engine = RuleEngine()
     engine.add_rules(globals())
 
     with engine.as_current():

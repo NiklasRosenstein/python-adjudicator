@@ -7,8 +7,8 @@ from adjudicator.errors import MultipleMatchingRulesError, NoMatchingRulesError,
 from adjudicator.Executor import Executor
 from adjudicator.Params import Params
 from adjudicator.Rule import Rule, collect_rules, rule
-from adjudicator.RulesEngine import RulesEngine, get
-from adjudicator.RulesGraph import RulesGraph
+from adjudicator.RuleEngine import RuleEngine, get
+from adjudicator.RuleGraph import RuleGraph
 
 __all__ = [
     "Cache",
@@ -21,8 +21,8 @@ __all__ = [
     "rule",
     "Rule",
     "RuleResolveError",
-    "RulesEngine",
-    "RulesGraph",
+    "RuleEngine",
+    "RuleGraph",
 ]
 
 __version__ = "0.2.1"

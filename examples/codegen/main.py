@@ -8,7 +8,7 @@ from typing import IO
 
 from equilibrium import Resource, ResourceContext
 
-from adjudicator import RulesEngine, collect_rules, get, rule
+from adjudicator import RuleEngine, collect_rules, get, rule
 
 #
 # Abstraction over Resource APIs
@@ -214,7 +214,7 @@ def main() -> None:
     context.resource_types.register(TerraformWorkspace)
     context.load_manifest(Path(__file__).parent / "manifest.yaml")
 
-    engine = RulesEngine(collect_rules(), [context])
+    engine = RuleEngine(collect_rules(), [context])
     engine.hashsupport.register(Resource, lambda r: hash(r.uri))
     with engine.as_current():
         generate_terraform_code(sys.stdout)

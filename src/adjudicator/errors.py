@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from adjudicator.Rule import Rule
-    from adjudicator.RulesGraph import RulesGraph
+    from adjudicator.RuleGraph import RuleGraph
     from adjudicator.Signature import Signature
 
 SUBSET_CHAR = "⊆"
@@ -18,7 +18,7 @@ class RuleResolveError(Exception):
 @dataclass
 class NoMatchingRulesError(RuleResolveError):
     sig: Signature
-    graph: RulesGraph
+    graph: RuleGraph
 
     def __str__(self) -> str:
         return f"No rule(s) satisfy the signature {SUBSET_CHAR} {self.sig}" + (
@@ -38,7 +38,7 @@ class NoMatchingRulesError(RuleResolveError):
 class MultipleMatchingRulesError(RuleResolveError):
     sig: Signature
     paths: list[list[Rule]]
-    graph: RulesGraph
+    graph: RuleGraph
 
     def __str__(self) -> str:
         return (
