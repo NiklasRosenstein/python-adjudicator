@@ -14,9 +14,12 @@ class MyGeneric(Generic[T]):
 
 
 def test__Params__cannot_delinate_between_instances_of_different_generic_types() -> None:
-    with raises(AssertionError) as excinfo:
+    with raises(ValueError) as excinfo:
         Params([MyGeneric[int](1), MyGeneric[str]("a")])
-    assert str(excinfo.value) == "Duplicate types in Params"
+    assert (
+        str(excinfo.value) == "A parameter of type `adjudicator.Params_test.MyGeneric` was specified in argument "
+        "#0 of the Params() constructor, but was encountered again in argument #0, item #1."
+    )
 
 
 def test__Params__can_delinate_between_instances_of_different_generic_types_when_explicitly_specified() -> None:

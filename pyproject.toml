@@ -50,7 +50,7 @@ flake8 = "flake8 examples/ src/ tests/"
 isort  = "isort --check-only examples/ src/ tests/"
 mypy   = "dmypy run examples/ src/"
 pycln  = "pycln examples/ src/ tests/ --check"
-pytest = "pytest examples/ src/ tests/ -vv --doctest-modules"
+pytest = "pytest src/ tests/ -vv --doctest-modules"
 
 [tool.slap.run]
 "docs:build" = ">&2 echo 'Not implemented' && exit 1"

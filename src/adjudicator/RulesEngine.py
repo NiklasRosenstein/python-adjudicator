@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
-from typing import Any, ClassVar, Iterable, Iterator, TypeVar
+from typing import Any, ClassVar, Iterable, Iterator, Mapping, TypeVar
 
+from adjudicator import collect_rules
 from adjudicator.Cache import Cache
 from adjudicator.Executor import Executor
 from adjudicator.HashSupport import HashSupport
@@ -17,17 +18,20 @@ T = TypeVar("T")
 class RulesEngine:
     """
     A simple rules engine.
+
+    It is composed of rules, built-in facts (i.e. parameters that are available to all rules), an executor for
+    executing rules, a cache for caching rule results and a registry of union types.
     """
 
     def __init__(
         self,
-        rules: Iterable[Rule] | RulesGraph,
+        rules: Iterable[Rule] | RulesGraph = (),
         facts: Params.InitType | None = None,
         executor: Executor | None = None,
     ) -> None:
         self.graph = RulesGraph(rules)
         self.hashsupport = HashSupport()
-        self.facts = Params(facts or (), self.hashsupport)
+        self.facts = Params(facts or (), hasher=self.hashsupport)
         self.executor = executor or Executor.simple(Cache.memory())
 
     _current_engine_stack: ClassVar[list[RulesEngine]] = []
@@ -119,8 +123,8 @@ def get(output_type: type[T], *inputs: object) -> T:
 
     if inputs and isinstance(inputs[0], dict):
         assert len(inputs) == 1, "No arguments allowed after dictionary"
-        params = Params(inputs[0], engine.hashsupport)
+        params = Params(inputs[0], hasher=engine.hashsupport)
     else:
-        params = Params(inputs, engine.hashsupport)
+        params = Params(inputs, hasher=engine.hashsupport)
 
     return engine.get(output_type, params)

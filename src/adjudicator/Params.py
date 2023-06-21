@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Any, Collection, Generic, Iterable, KeysView, Mapping, Sequence, TypeAlias, TypeVar, cast, overload
 
+from typeapi import type_repr
+
 from adjudicator.HashSupport import Hasher
 from adjudicator.Signature import Signature
 
@@ -28,14 +30,15 @@ class Params:
     >>> @dataclass(frozen=True)
     ... class MyGeneric(Generic[T]):
     ...   value: T
-    >>> Params([MyGeneric[int](1), MyGeneric[str]("a")])
+    >>> Params(MyGeneric[int](1), MyGeneric[str]("a"))
     Traceback (most recent call last):
-    AssertionError: Duplicate types in Params
+    ValueError: A parameter of type `adjudicator.Params.MyGeneric` was specified in argument #0 of the \
+Params() constructor, but was encountered again in argument #1.
 
     This is because the Params class would not be able to distinguish between the two instances of MyGeneric without
     additional runtime type information. Even a single instance of MyGeneric would not be allowed:
 
-    >>> Params([MyGeneric[int](1)])
+    >>> Params(MyGeneric[int](1))
     Traceback (most recent call last):
     AssertionError: Instance of parameterized generic type MyGeneric must be explicitly associated with type \
 information.
@@ -47,6 +50,12 @@ information.
     ...     MyGeneric[str]: MyGeneric("a"),
     ... })
     Params(MyGeneric(value=1), MyGeneric(value='a'))
+
+    The Params can be initialized with a tuple or list of objects, a dictionary of objects, objects directly, or
+    multiple of either:
+
+    >>> Params(42, {MyGeneric[int]: MyGeneric(1)})
+    Params(42, MyGeneric(value=1))
     """
 
     InitType: TypeAlias = Sequence[object] | Mapping[type[Any], object] | "Params"
@@ -54,17 +63,42 @@ information.
     _params: dict[type[Any], object]
     _hasher: Hasher
 
-    def __init__(self, args: InitType = (), hasher: Hasher | None = None):
-        if isinstance(args, Params):
-            self._params = dict(args._params)
-            if hasher is None:
-                hasher = args._hasher
-        elif isinstance(args, Mapping):
-            self._params = dict(args)
-        else:
-            self._params = {type(arg): arg for arg in args}
-            assert len(self._params) == len(args), "Duplicate types in Params"
+    def __init__(self, *args: InitType, hasher: Hasher | None = None):
+        self._params = {}
 
+        # Keep track of where each type was specified in the constructor arguments.
+        arg_index_map: dict[type[Any], tuple[int, int]] = {}
+
+        def format_arg_index(arg_index: tuple[int, int]) -> str:
+            return (
+                f"argument #{arg_index[0]}" if arg_index[1] == 0 else f"argument #{arg_index[0]}, item #{arg_index[1]}"
+            )
+
+        # Parse the arguments into the _params dictionary.
+        for arg_idx, arg in enumerate(args):
+            items: Iterable[tuple[type[Any], object]]
+            if isinstance(arg, Params):
+                items = arg._params.items()
+                if hasher is None:
+                    hasher = arg._hasher
+            elif isinstance(arg, Mapping):
+                items = arg.items()
+            elif type(arg) in (list, tuple):
+                items = ((type(x), x) for x in arg)
+            else:
+                items = [(type(arg), arg)]
+
+            for item_idx, (key, value) in enumerate(items):
+                if key in self._params:
+                    raise ValueError(
+                        f"A parameter of type `{type_repr(key)}` was specified in "
+                        f"{format_arg_index(arg_index_map[key])} of the Params() constructor, but was encountered "
+                        f"again in {format_arg_index((arg_idx, item_idx))}."
+                    )
+                self._params[key] = value
+                arg_index_map[key] = (arg_idx, item_idx)
+
+        # Ensure that all generic types are explicitly associated with type information.
         for type_, obj in self._params.items():
             assert not (
                 isinstance(type_, type) and issubclass(type_, Generic) and type_.__parameters__  # type: ignore
@@ -94,14 +128,14 @@ information.
         Merge two parameter sets, taking precedence of the parameters in the right hand side.
         """
 
-        return Params({**self._params, **params._params}, self._hasher)
+        return Params({**self._params, **params._params}, hasher=self._hasher)
 
     def __sub__(self, types: Collection[type[Any]]) -> Params:
         """
         Remove the parameters in the right hand side from the left hand side.
         """
 
-        return Params({k: v for k, v in self._params.items() if k not in types}, self._hasher)
+        return Params({k: v for k, v in self._params.items() if k not in types}, hasher=self._hasher)
 
     def __len__(self) -> int:
         return len(self._params)
@@ -137,9 +171,9 @@ information.
         """
 
         if total:
-            return Params({t: self.get(t) for t in types}, self._hasher)
+            return Params({t: self.get(t) for t in types}, hasher=self._hasher)
         else:
-            return Params({t: self.get(t) for t in types if t in self}, self._hasher)
+            return Params({t: self.get(t) for t in types if t in self}, hasher=self._hasher)
 
     def signature(self, output_type: type[Any]) -> Signature:
         """
@@ -153,4 +187,4 @@ information.
         Replace the hasher.
         """
 
-        return Params(self, hasher)
+        return Params(self, hasher=hasher)
