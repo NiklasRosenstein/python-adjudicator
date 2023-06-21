@@ -22,7 +22,7 @@ jobs:
     - uses: python-slap/slap-cli@gha/install/v1
     - run: slap install -vv --no-venv-check
     - run: |
-        python examples/hello.py | grep "Hello, World!"
+        python examples/hello.py | grep "Hello World!"
 
   example-update-readme:
     runs-on: ubuntu-latest

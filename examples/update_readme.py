@@ -205,7 +205,7 @@ def _get_toc_directives(request: PreprocessFileTarget) -> TocDirectives:
 @rule()
 def _render_toc(request: TocDirective) -> RenderedDirective:
     content = get(ReadFile, ReadFileRequest(request.path)).content
-    regex = re.compile(r"(#+)\\s+(.*)")
+    regex = re.compile(r"(#+)\s+(.*)")
     matches = list(regex.finditer(content, request.end))
     min_depth = min(len(match.group(1)) for match in matches)
     toc = []
