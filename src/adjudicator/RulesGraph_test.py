@@ -6,7 +6,7 @@ from adjudicator.RulesGraph import RulesGraph
 from adjudicator.Signature import Signature
 
 
-def test__RulesGraph__rules_for() -> None:
+def test__RulesGraph__get_rules_for_output_type() -> None:
     """
     Creates a rules graph like this:
 
@@ -40,11 +40,52 @@ def test__RulesGraph__rules_for() -> None:
         ]
     )
 
-    assert {r.id for r in graph.rules_for(int)} == {"r1", "r2"}
-    assert {r.id for r in graph.rules_for(float)} == {"r3"}
+    assert graph.get_rules_for_output_type(int) == {graph["r1"], graph["r2"]}
+    assert graph.get_rules_for_output_type(float) == {graph["r3"]}
 
 
-def test__RulesGraph__cannot_resolve_diamond_dependency() -> None:
+def test__RulesGraph__get_rules_for_output_type__with_union_membership() -> None:
+    class A:
+        pass
+
+    class SpecificA(A):
+        pass
+
+    graph = RulesGraph()
+    graph.add_rules(
+        [
+            Rule(
+                func=lambda p: SpecificA(),
+                input_types={str},
+                output_type=SpecificA,
+                id="r1",
+            ),
+        ]
+    )
+
+    assert graph.get_rules_for_output_type(SpecificA) == {graph["r1"]}
+    assert graph.get_rules_for_output_type(A) == set()
+
+    graph.register_union_member(A, SpecificA)
+    assert graph.get_rules_for_output_type(A) == {graph["r1"]}
+
+
+def test__RulesGraph__get_rules_for_output_type__returns_rules_without_inputs() -> None:
+    graph = RulesGraph()
+    graph.add_rules(
+        [
+            Rule(
+                func=lambda p: 42,
+                input_types=set(),
+                output_type=int,
+                id="r1",
+            ),
+        ]
+    )
+    assert graph.get_rules_for_output_type(int) == {graph["r1"]}
+
+
+def test__RulesGraph__find_path__cannot_resolve_diamond_dependency() -> None:
     """
     Builds a rules graph like this:
 

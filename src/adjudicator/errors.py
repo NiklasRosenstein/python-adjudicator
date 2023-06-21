@@ -24,7 +24,10 @@ class NoMatchingRulesError(RuleResolveError):
         return f"No rule(s) satisfy the signature {SUBSET_CHAR} {self.sig}" + (
             (
                 f"\nAvailable rules for output type {self.sig.output_type.__name__} are:\n"
-                + "\n".join(f"  {rule.id}: {rule.signature}" for rule in self.graph.rules_for(self.sig.output_type))
+                + "\n".join(
+                    f"  {rule.id}: {rule.signature}"
+                    for rule in self.graph.get_rules_for_output_type(self.sig.output_type)
+                )
             )
             if self.graph
             else ""

@@ -3,3 +3,9 @@ id = "08afae87-acec-4c9c-ae97-e218cb53c891"
 type = "breaking change"
 description = "Update `Params()` constructor to accept multiple arguments, making the construction of such objects more readable in code."
 author = "@NiklasRosenstein"
+
+[[entries]]
+id = "b34ceac4-05f5-4333-82d9-9a7c718d02ae"
+type = "breaking change"
+description = "Update `RulesEngine` API and add support for union memberships."
+author = "@NiklasRosenstein"

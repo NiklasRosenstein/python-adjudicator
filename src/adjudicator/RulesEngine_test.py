@@ -18,6 +18,7 @@ sys.setrecursionlimit(130)
         (Cache.memory(), True),
         (Cache.none(), False),
     ],
+    ids=["memory", "none"],
 )
 def test__RulesEngine__can_cache_properly(cache_impl: Cache, is_cached: bool) -> None:
     """

@@ -71,13 +71,15 @@ class RulesEngine:
         for rule in rules:
             inputs = self.facts.filter(rule.input_types) | params.filter(rule.input_types)
             output = self.executor.execute(rule, inputs, self)
-            params = params | Params({rule.output_type: output}, self.hashsupport)
+            params = params | Params({rule.output_type: output}, hasher=self.hashsupport)
 
         assert isinstance(output, output_type), f"Expected {output_type}, got {type(output)}"
         return output
 
-    def add_rules(self, rules: Iterable[Rule]) -> None:
-        self.graph.update(rules)
+    def add_rules(self, rules: Iterable[Rule] | Mapping[str, Any]) -> None:
+        if isinstance(rules, Mapping):
+            rules = collect_rules(globals=rules)
+        self.graph.add_rules(rules)
 
     def assert_facts(self, facts: Params.InitType) -> None:
         """
