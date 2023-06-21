@@ -15,3 +15,9 @@ id = "3b1fb663-dc49-4886-98c2-1928ae012ec3"
 type = "breaking change"
 description = "rename `RulesGraph` to `RuleGraph` and `RulesEngine` to `RuleEngine`"
 author = "@NiklasRosenstein"
+
+[[entries]]
+id = "994688bb-fbae-4f41-9b45-e1066bcaa524"
+type = "breaking change"
+description = "Rework `RuleEngine` and `RuleGraph` API, rename `Rule` to `ProductionRule`, add `UnionRule`, require that the `@rule()` decorator is called"
+author = "@NiklasRosenstein"

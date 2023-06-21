@@ -45,16 +45,16 @@ typed = true
 
 [tool.slap.test]
 check  = "slap check"
-black  = "black --check examples/ src/ tests/"
+black  = "black --check examples/ src/ tests/ --exclude examples/hello.py"
 flake8 = "flake8 examples/ src/ tests/"
-isort  = "isort --check-only examples/ src/ tests/"
+isort  = "isort --check-only examples/ src/ tests/ --extend-skip examples/hello.py"
 mypy   = "dmypy run examples/ src/"
 pycln  = "pycln examples/ src/ tests/ --check"
 pytest = "pytest src/ tests/ -vv --doctest-modules"
 
 [tool.slap.run]
 "docs:build" = ">&2 echo 'Not implemented' && exit 1"
-fmt          = "pycln src/ tests/ examples/ && black src/ tests/ examples/ && isort src/ tests/ examples/"
+fmt          = "pycln src/ tests/ examples/ && black src/ tests/ examples/ --exclude examples/hello.py && isort src/ tests/ examples/ --extend-skip examples/hello.py && python examples/update_readme.py"
 
 [tool.mypy]
 python_version = "3.10"

@@ -3,7 +3,7 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-from adjudicator import RuleEngine, get, rule
+from adjudicator import RuleEngine, collect_rules, get, rule
 
 
 @dataclass(frozen=True)
@@ -27,12 +27,12 @@ class PythonScriptExecutionResult:
     exit_code: int
 
 
-@rule
+@rule()
 def python_binary_from_request(request: PythonBinaryRequest) -> PythonBinary:
     return PythonBinary(path=Path(sys.executable), version=".".join(map(str, sys.version_info[:3])))
 
 
-@rule
+@rule()
 def python_script_execute(request: PythonScriptExecutionRequest, binary: PythonBinary) -> PythonScriptExecutionResult:
     command = [str(binary.path), str(request.path)]
     exit_code = subprocess.run(command).returncode
@@ -43,9 +43,9 @@ if __name__ == "__main__":
     script_path = Path(__file__).parent / "script.py"
 
     engine = RuleEngine()
-    engine.add_rules(globals())
+    engine.graph.add_rules(collect_rules(globals()))
 
-    with engine.as_current():
+    with engine.activate():
         print("Executing script")
         response = get(
             PythonScriptExecutionResult,

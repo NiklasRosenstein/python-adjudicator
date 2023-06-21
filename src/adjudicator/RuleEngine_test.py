@@ -6,7 +6,7 @@ from pytest import mark
 from adjudicator.Cache import Cache
 from adjudicator.Executor import Executor
 from adjudicator.Params import Params
-from adjudicator.Rule import Rule, collect_rules, rule
+from adjudicator.rule import ProductionRule, collect_rules, rule
 from adjudicator.RuleEngine import RuleEngine, get
 
 sys.setrecursionlimit(130)
@@ -31,7 +31,7 @@ def test__RulesEngine__can_cache_properly(cache_impl: Cache, is_cached: bool) ->
 
     num_invokations = 0
 
-    @rule
+    @rule()
     def fibonacci(n: int) -> Fibonacci:
         nonlocal num_invokations
         num_invokations += 1
@@ -56,15 +56,15 @@ def test__RulesEngine__can_cache_properly(cache_impl: Cache, is_cached: bool) ->
 def test__RulesEngine__picks_correct_rule_for_same_output() -> None:
     engine = RuleEngine(
         rules=[
-            Rule(
+            ProductionRule(
                 func=lambda p: int(p.get(str)),
-                input_types={str},
+                input_types=frozenset({str}),
                 output_type=int,
                 id="r1",
             ),
-            Rule(
+            ProductionRule(
                 func=lambda p: int(p.get(bool)),
-                input_types={bool},
+                input_types=frozenset({bool}),
                 output_type=int,
                 id="r2",
             ),
@@ -84,9 +84,9 @@ def test__RulesEngine__injects_facts() -> None:
 
     engine = RuleEngine(
         rules=[
-            Rule(
+            ProductionRule(
                 func=lambda p: p.get(CustomType).v,
-                input_types={CustomType},
+                input_types=frozenset({CustomType}),
                 output_type=int,
                 id="r1",
             )

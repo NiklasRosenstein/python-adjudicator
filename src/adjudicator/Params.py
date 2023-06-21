@@ -58,7 +58,7 @@ information.
     Params(42, MyGeneric(value=1))
     """
 
-    InitType: TypeAlias = Sequence[object] | Mapping[type[Any], object] | "Params"
+    InitType: TypeAlias = Sequence[object] | Mapping[type[Any], object] | "Params" | object
 
     _params: dict[type[Any], object]
     _hasher: Hasher
@@ -84,6 +84,7 @@ information.
             elif isinstance(arg, Mapping):
                 items = arg.items()
             elif type(arg) in (list, tuple):
+                assert isinstance(arg, (list, tuple))
                 items = ((type(x), x) for x in arg)
             else:
                 items = [(type(arg), arg)]
@@ -180,7 +181,7 @@ information.
         Obtain a signature for this set of parameters, with the specified output type.
         """
 
-        return Signature(set(self._params.keys()), output_type)
+        return Signature(frozenset(self._params.keys()), output_type)
 
     def with_hasher(self, hasher: Hasher) -> Params:
         """

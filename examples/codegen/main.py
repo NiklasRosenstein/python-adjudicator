@@ -51,7 +51,7 @@ class AwsAccountCreation:
     vault_token_resource: ResourceOutput
 
 
-@rule
+@rule()
 def get_account_creation_code(resource: Resource[AwsAccount]) -> AwsAccountCreation:
     """
     Generates the Terraform code to create an AWS account and store its credentials in Vault, as well as a Vault
@@ -107,7 +107,7 @@ class TerraformWorkspaceCreation:
     code: str
 
 
-@rule
+@rule()
 def get_workspace_creation_code(resource: Resource[TerraformWorkspace]) -> TerraformWorkspaceCreation:
     """
     Generate the code to create a Terraform workspace.
@@ -158,7 +158,7 @@ class AwsProviderInitialization:
     code: str
 
 
-@rule
+@rule()
 def get_aws_provider_code(resource: Resource[AwsAccount]) -> AwsProviderInitialization:
     """
     Returns the code that needs to be placed into the Terraform workspace configuration to initialize the AWS
@@ -216,7 +216,7 @@ def main() -> None:
 
     engine = RuleEngine(collect_rules(), [context])
     engine.hashsupport.register(Resource, lambda r: hash(r.uri))
-    with engine.as_current():
+    with engine.activate():
         generate_terraform_code(sys.stdout)
 
 

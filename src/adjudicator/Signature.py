@@ -8,7 +8,7 @@ class Signature:
     A signature represents the inputs and output of a rule.
     """
 
-    inputs: set[type[Any]]
+    inputs: frozenset[type[Any]]
     output_type: type[Any]
 
     def __str__(self) -> str:

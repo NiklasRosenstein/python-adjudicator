@@ -4,27 +4,70 @@
 > are the ones who settle disputes or decide who is right in a disagreement. This could be a judge in a courtroom, an
 > arbitrator in a negotiation, or any person or system given the power to make decisions of this type.
 
-Adjudicator is a framework for type-based rules engines largely inspired by the Pants build system. The rule graph
-consists of nodes which are concrete Python types and edges which are functions that take a set of input types and
-produce an output type.
+Adjudicator is a framework for implementing type-based rule engines largely inspired by the Pants build system. The
+rule graph consists of nodes which are concrete Python types and edges which are functions that take a set of input
+types and produce an output type.
 
 Rules are matched on a set of facts, which populate the possible input types of a rule. Deriving a type may require
 chained execution of rules, which is supported. Global facts may be used to populate a potential input type for all
 rule executions.
 
-In a way, Adjudicator can also be called a dependency injection engine.
+The Adjudicator rule engine is designed to be used in a request-response fashion. A request is a set of facts that
+should be used to derive a type. A response is the derived type. The rule engine will execute the rules necessary to
+derive the type and return the response. If a rule was already executed with the same inputs, it will not be executed
+again. For optimal use of the caching mechanism, all types participating in the rule evaluation should be immutable
+and implement a stable hash (e.g. using `@dataclass(frozen=True)` and `tuple` instead of `list`, etc.).
 
-```mermaid
-graph LR
-    String --> Rule1 --> Integer
-    String --> Rule2 --> Integer
-    IntegerBase --> Rule2
+When a mutable type should intentionally participate in the rule evaluation, usually this works automatically because
+the hash of a Python object that does not provide a custom `__hash__()` implementation or disables its hashing is based
+on the object's identity. This means that the hash is stable for the memory allocation of the object, and will not
+change if the object is mutated. For types that do not _support_ hashing, support can be enabled explicitly using the
+`RuleEngine.hashsupport` object.
+
+__Table of Contents__
+
+<!-- table of contents -->
+* [Quickstart](#quickstart)
+* [Installation](#installation)
+* [Future Extensions](#future-extensions)
+<!-- end table of contents -->
+
+## Quickstart
+
+The following example shows how to use Adjudicator to implement a simple "Hello World" application. The rule engine
+invokes the `say_hello()` production rule because a `HelloResponse` is requested and a `HelloRequest` is provided,
+which matches the rule's signature.
+
+<!-- include examples/hello.py code:python -->
+```python
+from dataclasses import dataclass
+from adjudicator import Params, RuleEngine, rule
+
+@dataclass(frozen=True)
+class HelloRequest:
+    name: str
+
+@dataclass(frozen=True)
+class HelloResponse:
+    greeting: str
+
+@rule()
+def say_hello(request: HelloRequest) -> HelloResponse:
+    return HelloResponse(greeting=f"Hello {request.name}!")
+
+engine = RuleEngine()
+engine.load_module(__name__)
+response = engine.get(HelloResponse, Params(HelloRequest(name="World")))
+print(response.greeting)
 ```
+<!-- end include -->
 
-In the above example, an `Integer` can be derived by providing a `String` as a fact and `Rule1` will be executed, or
-by also providing an `IntegerBase` and `Rule2` will be executed.
+A more complex example can be found in the [examples/update_readme.py](examples/update_readme.py) file. That script
+is actually used to keep this README file up to date with the example and the table of contents above. It demonstrates
+how to use the rule engine to generate a file based on a set of rules, leveraging union memberships and rule result
+caching.
 
-__Installation__
+## Installation
 
 Adjudicator is available on PyPI. You need at least Python 3.10.
 
@@ -32,24 +75,7 @@ Adjudicator is available on PyPI. You need at least Python 3.10.
 pip install python-adjudicator
 ```
 
-__Example code__
-
-Check out the [examples/codegen/](examples/codegen/) directory for a simple example of a rules engine that generates
-Terraform code based on a set of Kubernetes-like resources. This example combines the resource management API with
-the rules engine API.
-
-```mermaid
-graph LR
-    AwsAccount["Resource[AwsAccount]"] --> AwsAccountCreation
-    AwsAccount["Resource[AwsAccount]"] --> AwsProviderInitialization
-    TerraformWorkspace["Resource[TerraformWorspace]"] --> TerraformWorkspaceCreation
-```
-
-The advantage of using a rules engine here is that it avoids executing the same rule again if it was already executed
-with the same inputs. It also makes it easier to increase the system's complexity by adding more rules without also
-significantly increasing the complexity of the code.
-
-__Future extensions__
+## Future Extensions
 
 * Currently the rule graph stores rules as connections between types and rules on edges. A more efficient
   representation would be the one illustrated above, where types are connected to rules which are connected to types.

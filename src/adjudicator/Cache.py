@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from adjudicator.Params import Params
-    from adjudicator.Rule import Rule
+    from adjudicator.rule import ProductionRule
 
 
 class Cache(ABC):
@@ -14,13 +14,13 @@ class Cache(ABC):
     """
 
     @abstractmethod
-    def has(self, rule: Rule, params: Params) -> bool:
+    def has(self, rule: ProductionRule, params: Params) -> bool:
         """
         Return True if the specified rule and params have been evaluated.
         """
 
     @abstractmethod
-    def get(self, rule: Rule, params: Params) -> Any:
+    def get(self, rule: ProductionRule, params: Params) -> Any:
         """
         Return the result of evaluating the specified rule and params.
 
@@ -28,7 +28,7 @@ class Cache(ABC):
         """
 
     @abstractmethod
-    def set(self, rule: Rule, params: Params, value: Any) -> None:
+    def set(self, rule: ProductionRule, params: Params, value: Any) -> None:
         """
         Set the result of evaluating the specified rule and params.
         """
@@ -55,13 +55,13 @@ class NoneCache(Cache):
     Cache implementation that does not cache anything.
     """
 
-    def has(self, rule: Rule, params: Params) -> bool:
+    def has(self, rule: ProductionRule, params: Params) -> bool:
         return False
 
-    def get(self, rule: Rule, params: Params) -> Any:
+    def get(self, rule: ProductionRule, params: Params) -> Any:
         raise KeyError()
 
-    def set(self, rule: Rule, params: Params, value: Any) -> None:
+    def set(self, rule: ProductionRule, params: Params, value: Any) -> None:
         pass
 
 
@@ -73,11 +73,11 @@ class MemoryCache(Cache):
     def __init__(self) -> None:
         self._cache: dict[int, Any] = {}
 
-    def has(self, rule: Rule, params: Params) -> bool:
+    def has(self, rule: ProductionRule, params: Params) -> bool:
         return hash((rule.id, params)) in self._cache
 
-    def get(self, rule: Rule, params: Params) -> Any:
+    def get(self, rule: ProductionRule, params: Params) -> Any:
         return self._cache[hash((rule.id, params))]
 
-    def set(self, rule: Rule, params: Params, value: Any) -> None:
+    def set(self, rule: ProductionRule, params: Params, value: Any) -> None:
         self._cache[hash((rule.id, params))] = value
