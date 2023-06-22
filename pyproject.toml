@@ -54,7 +54,12 @@ pytest = "pytest src/ tests/ -vv --doctest-modules"
 
 [tool.slap.run]
 "docs:build" = ">&2 echo 'Not implemented' && exit 1"
-fmt          = "pycln src/ tests/ examples/ && black src/ tests/ examples/ --exclude examples/hello.py && isort src/ tests/ examples/ --extend-skip examples/hello.py && python examples/update_readme.py"
+fmt          = """
+pycln src/ tests/ examples/ &&
+black src/ tests/ examples/ --exclude examples/hello.py &&
+isort src/ tests/ examples/ --extend-skip examples/hello.py &&
+python -m adjudicator.examples.readmesync
+"""
 
 [tool.mypy]
 python_version = "3.10"
