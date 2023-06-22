@@ -12,8 +12,7 @@ jobs:
     - uses: actions/checkout@v3
     - uses: python-slap/slap-cli@gha/install/v1
     - run: slap install -vv --no-venv-check
-    - run: |
-        python examples/codegen/main.py
+    - run: python examples/codegen/main.py
 
   example-hello:
     runs-on: ubuntu-latest
@@ -21,15 +20,13 @@ jobs:
     - uses: actions/checkout@v3
     - uses: python-slap/slap-cli@gha/install/v1
     - run: slap install -vv --no-venv-check
-    - run: |
-        python examples/hello.py | grep "Hello World!"
+    - run: python examples/hello.py | grep "Hello World!"
 
-  example-update-readme:
+  readme-up-to-date-check:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - uses: python-slap/slap-cli@gha/install/v1
     - run: slap install -vv --no-venv-check
-    - run: |
-        python examples/update_readme.py
+    - run: python -m adjudicator.examples.readmesync
     - run: git diff --exit-code README.md
