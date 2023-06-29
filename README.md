@@ -26,11 +26,11 @@ change if the object is mutated. For types that do not _support_ hashing, suppor
 
 __Table of Contents__
 
-<!-- table of contents -->
+<!-- toc -->
 * [Quickstart](#quickstart)
 * [Installation](#installation)
 * [Future Extensions](#future-extensions)
-<!-- end table of contents -->
+<!-- end toc -->
 
 ## Quickstart
 
@@ -38,7 +38,7 @@ The following example shows how to use Adjudicator to implement a simple "Hello 
 invokes the `say_hello()` production rule because a `HelloResponse` is requested and a `HelloRequest` is provided,
 which matches the rule's signature.
 
-<!-- include examples/hello.py code:python -->
+<!-- include code:python examples/hello.py -->
 ```python
 from dataclasses import dataclass
 from adjudicator import Params, RuleEngine, rule
