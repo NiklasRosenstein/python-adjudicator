@@ -6,7 +6,7 @@ from adjudicator.Cache import Cache
 from adjudicator.errors import MultipleMatchingRulesError, NoMatchingRulesError, RuleResolveError
 from adjudicator.Executor import Executor
 from adjudicator.Params import Params
-from adjudicator.rule import ProductionRule, UnionRule, collect_rules, is_union, rule, union, union_rule
+from adjudicator.rule import ProductionRule, RuleTypes, UnionRule, collect_rules, is_union, rule, union, union_rule
 from adjudicator.RuleEngine import RuleEngine, get
 from adjudicator.RuleGraph import RuleGraph
 
@@ -24,6 +24,7 @@ __all__ = [
     "RuleEngine",
     "RuleGraph",
     "RuleResolveError",
+    "RuleTypes",
     "union_rule",
     "union",
     "UnionRule",

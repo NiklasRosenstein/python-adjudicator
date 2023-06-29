@@ -3,3 +3,9 @@ id = "84992040-7696-499b-91c2-1f22c5cec6ae"
 type = "breaking change"
 description = "Remove ReadmeSync feature from examples and move it into [mksync](https://github.com/NiklasRosenstein/mksync)"
 author = "@NiklasRosenstein"
+
+[[entries]]
+id = "2f510a6c-f30d-4dc2-b4cb-52fefde17dc8"
+type = "fix"
+description = "Export `RuleTypes` in `adjudicator` main module"
+author = "@NiklasRosenstein"
