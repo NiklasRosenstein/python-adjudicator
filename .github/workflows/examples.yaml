@@ -27,6 +27,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: python-slap/slap-cli@gha/install/v1
-    - run: slap install -vv --no-venv-check
-    - run: python -m adjudicator.examples.readmesync
+    - run: pip install mksync
+    - run: mksync README.md -i
     - run: git diff --exit-code README.md

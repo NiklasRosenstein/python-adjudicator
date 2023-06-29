@@ -58,7 +58,7 @@ fmt          = """
 pycln src/ tests/ examples/ &&
 black src/ tests/ examples/ --exclude examples/hello.py &&
 isort src/ tests/ examples/ --extend-skip examples/hello.py &&
-python -m adjudicator.examples.readmesync
+mksync README.md -i
 """
 
 [tool.mypy]

@@ -30,8 +30,6 @@ __Table of Contents__
 * [Quickstart](#quickstart)
 * [Installation](#installation)
 * [Future Extensions](#future-extensions)
-* [Add-on: ReadmeSync](#add-on-readmesync)
-  * [Synopsis](#synopsis)
 <!-- end table of contents -->
 
 ## Quickstart
@@ -64,10 +62,7 @@ print(response.greeting)
 ```
 <!-- end include -->
 
-A more complex example can be found in [src/adjudicator/examples/readmesync](src/adjudicator/examples/readmesync)
-directory. That script is actually used to keep this README file up to date with the example and the table of contents
-above. It demonstrates how to use the rule engine to generate a file based on a set of rules, leveraging union
-memberships and rule result caching.
+A more complex example can be found in the [mksync](https://github.com/NiklasRosenstein/mksync) project.
 
 ## Installation
 
@@ -83,39 +78,3 @@ pip install python-adjudicator
   representation would be the one illustrated above, where types are connected to rules which are connected to types.
 * The ability to mark facts as required to be consumed. If such a fact is not consumed during the execution of a
   request, an error will be raised.
-
-## Add-on: ReadmeSync
-
-The `python-adjudicator` package includes functionality to keep the content of a `README.md` file up to date by
-placing inline comments into the file that follow a certain syntax. In fact, the same utility is used to keep this
-readme file up to date with the example code and the table of contents.
-
-### Synopsis
-
-<!-- runcmd code: python -m adjudicator.examples.readmesync --help -->
-```
-usage: python -m adjudicator.examples.readmesync [-h] [--preview] [--verbose]
-                                                 [file]
-
-ReadmeSync is a utility that allows you to place comments into a Markdown file that represent
-directives for content to be included in their place. The following types of directives are
-supported:
-
-- `<!-- include <path> -->`: Include the contents of the file at the given path. A `code:<lang>`
-    option can be added to the directive to wrap the content in a code block using the specified
-    language name (can be empty).
-- `<!-- runcmd <command> -->`: Run the given command and include the output in the document. A
-    `code:<lang>` option can be added to the directive to wrap the output in a code block using
-    the specified language name (can be empty).
-- `<!-- table of contents -->`: Include a table of contents for the document for all Markdown
-    headers following the directive.
-
-positional arguments:
-  file           [default: README.md]
-
-options:
-  -h, --help     show this help message and exit
-  --preview, -p  run in preview mode
-  --verbose, -v  enable verbose logging
-```
-<!-- end runcmd -->

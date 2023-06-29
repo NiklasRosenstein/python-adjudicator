@@ -1,0 +1,5 @@
+[[entries]]
+id = "84992040-7696-499b-91c2-1f22c5cec6ae"
+type = "breaking change"
+description = "Remove ReadmeSync feature from examples and move it into [mksync](https://github.com/NiklasRosenstein/mksync)"
+author = "@NiklasRosenstein"
