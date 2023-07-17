@@ -1,0 +1,5 @@
+[[entries]]
+id = "55963ffe-e4d2-479f-9c9c-888a30c0f274"
+type = "improvement"
+description = "Raise compatibility with `typeapi` to `^2.1.0`"
+author = "@NiklasRosenstein"
