@@ -7,6 +7,8 @@ if TYPE_CHECKING:
     from adjudicator.Params import Params
     from adjudicator.rule import ProductionRule
 
+_sentinel = object()
+
 
 class Cache(ABC):
     """
@@ -72,12 +74,29 @@ class MemoryCache(Cache):
 
     def __init__(self) -> None:
         self._cache: dict[int, Any] = {}
+        self._persistent_cache: dict[int, Any] = {}
+
+    def __getstate__(self) -> tuple[dict[int, Any],]:
+        return (self._persistent_cache,)
+
+    def __setstate__(self, state: tuple[dict[int, Any],]) -> None:
+        self._cache = {}
+        (self._persistent_cache,) = state
 
     def has(self, rule: ProductionRule, params: Params) -> bool:
-        return hash((rule.id, params)) in self._cache
+        hash_code = params.hasher((rule.id, params))
+        return hash_code in self._cache or hash_code in self._persistent_cache
 
     def get(self, rule: ProductionRule, params: Params) -> Any:
-        return self._cache[hash((rule.id, params))]
+        hash_code = params.hasher((rule.id, params))
+        result = self._cache.get(hash_code, _sentinel)
+        if result is _sentinel:
+            result = self._persistent_cache[hash_code]
+        return result
 
     def set(self, rule: ProductionRule, params: Params, value: Any) -> None:
-        self._cache[hash((rule.id, params))] = value
+        if rule.persistent_caching:
+            dest = self._persistent_cache
+        else:
+            dest = self._cache
+        dest[params.hasher((rule.id, params))] = value

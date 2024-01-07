@@ -18,11 +18,20 @@ class Executor(ABC):
     """
 
     @abstractmethod
+    def cache(self) -> Cache | None:
+        raise NotImplementedError()
+
+    @abstractmethod
+    def set_cache(self, cache: Cache | None) -> None:
+        raise NotImplementedError()
+
+    @abstractmethod
     def execute(self, rule: ProductionRule, params: Params, engine: RuleEngine) -> Any:
         """
         Execute the specified rule with the specified params.
         """
-        ...
+
+        raise NotImplementedError()
 
     @staticmethod
     def simple(cache: Cache) -> "Executor":
@@ -48,6 +57,12 @@ class SimpleExecutor(Executor):
 
     def __init__(self, cache: Cache) -> None:
         self._cache = cache
+
+    def cache(self) -> Cache | None:
+        return self._cache
+
+    def set_cache(self, cache: Cache | None) -> None:
+        self._cache = cache or Cache.none()
 
     def execute(self, rule: ProductionRule, params: Params, engine: RuleEngine) -> Any:
         try:
@@ -76,6 +91,12 @@ class ThreadedExecutor(Executor):
         self._pending: dict[int, Future[Any]] = {}
         self._executor = ThreadPoolExecutor()
 
+    def cache(self) -> Cache | None:
+        return self._cache
+
+    def set_cache(self, cache: Cache | None) -> None:
+        self._cache = cache or Cache.none()
+
     def _on_result(self, rule: ProductionRule, params: Params, key: int) -> None:
         with self._lock:
             future = self._pending.pop(key)
@@ -93,7 +114,7 @@ class ThreadedExecutor(Executor):
         try:
             return self._cache.get(rule, params)
         except KeyError:
-            key = hash((rule.id, params))
+            key = params.hasher((rule.id, params))
             with self._lock:
                 try:
                     future = self._pending[key]

@@ -121,6 +121,9 @@ information.
             self._hash = self._hasher(tuple(sorted(map(self._hasher, self._params.values()))))
         return self._hash
 
+    #: If we have a consistent hasher, then the __hash__ method yields a consistent hash already.
+    __persistent_hash__ = __hash__
+
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({', '.join(map(repr, self._params.values()))})"
 
@@ -189,3 +192,7 @@ information.
         """
 
         return Params(self, hasher=hasher)
+
+    @property
+    def hasher(self) -> Hasher:
+        return self._hasher
