@@ -29,6 +29,7 @@ class ProductionRule:
     input_types: frozenset[type[Any]]
     output_type: type[Any]
     description: str | None = None
+    persistent_caching: bool = True  # If enabled, the result of the rule should be cached persistently.
     id: str = field(default_factory=lambda: str(uuid4()))
 
     def __post_init__(self) -> None:
@@ -69,6 +70,7 @@ class ProductionRule:
             frozenset(input_types),
             output_type,
             metadata.description,
+            metadata.persistent_caching,
             func.__module__ + "." + func.__qualname__,
         )
 
@@ -100,16 +102,19 @@ RuleTypes = ProductionRule | UnionRule
 @dataclass(frozen=True)
 class ProductionRuleMetadata:
     description: str | None = None
+    persistent_caching: bool = True
 
 
-def rule(*, description: str | None = None) -> Callable[[Callable[P, T]], Callable[P, T]]:
+def rule(
+    *, description: str | None = None, persistent_caching: bool = True
+) -> Callable[[Callable[P, T]], Callable[P, T]]:
     """
     Decorator for functions to be used as production rules. Marks the function with a `__adjudicator_rule__` attribute.
     The #collect_rules() function can be used to collect all functions marked with this attribute from a dictionary or
     module.
     """
 
-    metadata = ProductionRuleMetadata(description)
+    metadata = ProductionRuleMetadata(description, persistent_caching)
 
     def decorator(func: Callable[P, T]) -> Callable[P, T]:
         setattr(func, "__adjudicator_rule__", metadata)
