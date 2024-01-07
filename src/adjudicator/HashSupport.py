@@ -116,8 +116,8 @@ def persistent_hash(obj: Any, recurse: Hasher, algorithm: str = "blake2b", fallb
                 hasher.update(b";")
             hasher.update(b"}")
             return
-        if hasattr(obj, "__consistent_hash__"):
-            hasher.update(obj.__consistent_hash__().to_bytes(8, "little", signed=True))
+        if hasattr(obj, "__persistent_hash__"):
+            hasher.update(obj.__persistent_hash__().to_bytes(8, "little", signed=True))
             return
         if fallback:
             hasher.update(hash(obj).to_bytes(8, "little", signed=True))
