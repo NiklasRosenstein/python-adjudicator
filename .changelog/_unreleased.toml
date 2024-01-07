@@ -3,3 +3,9 @@ id = "119b4c09-afc4-4968-bc45-7619c9df0a4f"
 type = "feature"
 description = "Add `HashSupport(default)` argument and attribute"
 author = "@NiklasRosenstein"
+
+[[entries]]
+id = "d25fe1fb-c9d0-4e3c-afcf-18d0d5eac1b2"
+type = "breaking change"
+description = "Implement persistent hashing."
+author = "@NiklasRosenstein"
