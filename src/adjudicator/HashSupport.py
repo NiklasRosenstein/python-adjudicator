@@ -1,6 +1,7 @@
 import hashlib
 import sys
 from collections.abc import Sequence
+from functools import partial
 from types import NoneType
 from typing import Any, Callable, Mapping
 
@@ -20,8 +21,10 @@ class HashSupport:
     """
 
     def __init__(self, permit_not_persistent_hashing: bool = False) -> None:
-        self.default: Hasher = lambda obj: persistent_hash(
-            obj, self, fallback=hash if permit_not_persistent_hashing else None
+        self.default: Hasher = partial(
+            persistent_hash,
+            recurse=self,
+            fallback=hash if permit_not_persistent_hashing else None,
         )
         self._custom_hashers: dict[type, Hasher] = {}
         self._fallback_hashers: list[Hasher] = []
