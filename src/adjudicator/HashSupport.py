@@ -9,7 +9,8 @@ class HashSupport:
     some otherwise unhashable types can be made hashable by providing a custom hash function.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, default: Hasher = hash) -> None:
+        self.default = hash
         self._custom_hashers: dict[type, Hasher] = {}
         self._fallback_hashers: list[Hasher] = []
 
@@ -46,4 +47,4 @@ class HashSupport:
             if result is not NotImplemented:
                 return result
 
-        return hash(obj)
+        return self.default(obj)

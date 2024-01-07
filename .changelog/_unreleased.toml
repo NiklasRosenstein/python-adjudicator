@@ -1,0 +1,5 @@
+[[entries]]
+id = "119b4c09-afc4-4968-bc45-7619c9df0a4f"
+type = "feature"
+description = "Add `HashSupport(default)` argument and attribute"
+author = "@NiklasRosenstein"
