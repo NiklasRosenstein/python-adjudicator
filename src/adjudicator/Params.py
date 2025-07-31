@@ -58,7 +58,7 @@ information.
     Params(42, MyGeneric(value=1))
     """
 
-    InitType: TypeAlias = Sequence[object] | Mapping[type[Any], object] | "Params" | object
+    InitType: TypeAlias = "Sequence[object] | Mapping[type[Any], object] | Params | object"
 
     _params: dict[type[Any], object]
     _hasher: Hasher
