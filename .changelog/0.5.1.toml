@@ -1,0 +1,13 @@
+release-date = "2025-07-31"
+
+[[entries]]
+id = "260b2b2a-bb3a-48bd-9b90-8a7cf2ee1be8"
+type = "hygiene"
+description = "Migrate to Uv and Tire"
+author = "@NiklasRosenstein"
+
+[[entries]]
+id = "2aff7518-405e-4749-b134-aad63c6b8f56"
+type = "fix"
+description = "Fix TypeError for Python 3.14 in TypeAlias definition"
+author = "@NiklasRosenstein"
