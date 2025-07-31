@@ -41,6 +41,7 @@ which matches the rule's signature.
 <!-- include code:python examples/hello.py -->
 ```python
 # fmt: off
+# ruff: noqa
 from dataclasses import dataclass
 from adjudicator import Params, RuleEngine, rule
 

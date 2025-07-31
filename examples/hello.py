@@ -1,4 +1,5 @@
 # fmt: off
+# ruff: noqa
 from dataclasses import dataclass
 from adjudicator import Params, RuleEngine, rule
 
