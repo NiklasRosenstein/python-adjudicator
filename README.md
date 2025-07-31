@@ -40,6 +40,7 @@ which matches the rule's signature.
 
 <!-- include code:python examples/hello.py -->
 ```python
+# fmt: off
 from dataclasses import dataclass
 from adjudicator import Params, RuleEngine, rule
 
