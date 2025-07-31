@@ -184,13 +184,11 @@ def union_rule(union_type: type[Any] | None = None) -> Callable[[type[T]], type[
 
 
 @overload
-def collect_rules(obj: str | Mapping[str, Any] | object, /) -> list[RuleTypes]:
-    ...
+def collect_rules(obj: str | Mapping[str, Any] | object, /) -> list[RuleTypes]: ...
 
 
 @overload
-def collect_rules(*, stackdepth: int = 0) -> list[RuleTypes]:
-    ...
+def collect_rules(*, stackdepth: int = 0) -> list[RuleTypes]: ...
 
 
 def collect_rules(

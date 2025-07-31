@@ -125,7 +125,7 @@ def get_workspace_creation_code(resource: Resource[TerraformWorkspace]) -> Terra
 
     code = dedent(
         f"""
-        module "workspace_{resource.metadata.name.replace('-', '_')}" {{
+        module "workspace_{resource.metadata.name.replace("-", "_")}" {{
             source = "./modules/terraform_workspace"
             name = "{resource.metadata.name}"
             variables = [

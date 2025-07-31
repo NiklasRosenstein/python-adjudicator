@@ -70,11 +70,12 @@ class SimpleExecutor(Executor):
         except KeyError:
             with engine.activate():
                 result = rule.func(params)
-            assert isinstance(
-                result, rule.output_type
-            ), "ProductionRule output (type: %r) does not match ProductionRule output type: %r" % (
-                type(result),
-                rule.output_type,
+            assert isinstance(result, rule.output_type), (
+                "ProductionRule output (type: %r) does not match ProductionRule output type: %r"
+                % (
+                    type(result),
+                    rule.output_type,
+                )
             )
             self._cache.set(rule, params, result)
             return result
@@ -102,11 +103,12 @@ class ThreadedExecutor(Executor):
             future = self._pending.pop(key)
             assert future.done(), "Future is not done"
             result = future.result()
-            assert isinstance(
-                result, rule.output_type
-            ), "ProductionRule output (type: %r) does not match ProductionRule output type: %r" % (
-                type(result),
-                rule.output_type,
+            assert isinstance(result, rule.output_type), (
+                "ProductionRule output (type: %r) does not match ProductionRule output type: %r"
+                % (
+                    type(result),
+                    rule.output_type,
+                )
             )
             self._cache.set(rule, params, result)
 

@@ -148,12 +148,10 @@ information.
         return bool(self._params)
 
     @overload
-    def get(self, param_type: type[T]) -> T:
-        ...
+    def get(self, param_type: type[T]) -> T: ...
 
     @overload
-    def get(self, param_type: type[T], default: U) -> T | U:
-        ...
+    def get(self, param_type: type[T], default: U) -> T | U: ...
 
     def get(self, param_type: type[T], default: U | object = _Sentinel) -> T | U:
         try:
